@@ -1,6 +1,6 @@
 {
   "id": "typing",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "Privacy-first aggregate typing statistics",
   "metadata": {
     "ui": {
@@ -8,7 +8,7 @@
       "name": "Delta Type",
       "description": "Background Linux typing statistics with a separate optional trainer. Optional local physical-key history.",
       "publisher": "Delta",
-      "version": "0.2.1",
+      "version": "0.3.0",
       "contract": "^1.4.0",
       "icon": "keyboard",
       "category": "input",
