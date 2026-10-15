@@ -1,16 +1,16 @@
 {
-  "title": "Delta · Printing",
-  "heading": "Press statistics",
-  "privacy": "Only an explicit collection in this field. The text stays in the browser; only the language, duration, number of characters and corrections are transmitted; input outside the simulator is not tracked.",
+  "title": "Delta Type",
+  "heading": "Typing statistics",
+  "privacy": "Collection is opt-in and limited to this field. Text stays in your browser; only language, duration, character counts and correction counts are sent. Nothing outside this trainer is tracked.",
   "token": "Delta token with call:typing.ingest",
   "language": "Language of the session",
   "ru": "Russian",
   "en": "English",
   "placeholder": "Type in arbitrary text...",
-  "send": "Complete and ship aggregates",
+  "send": "Finish and send aggregates",
   "statusReady": "Start typing",
   "statusSent": "Aggregates accepted; text deleted",
-  "statusError": "Sending error. Check the kernel and the token.",
+  "statusError": "Could not send. Check your node connection and scoped token.",
   "statusEmpty": "Enter at least one character first.",
-  "statusIME": "IME/composition: this simulator does not support accurate counting. Use a trusted aggregate assembler."
+  "statusIME": "IME/composition is not supported for accurate counting in this trainer. Use a trusted aggregate client."
 }
