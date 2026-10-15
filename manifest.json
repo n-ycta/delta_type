@@ -1,6 +1,6 @@
 {
   "id": "typing",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Privacy-first aggregate typing statistics",
   "metadata": {
     "ui": {
@@ -8,7 +8,7 @@
       "name": "Delta Type",
       "description": "Opt-in RU/EN typing aggregates without recording text. Browser trainer or trusted aggregate clients.",
       "publisher": "Delta",
-      "version": "0.2.0",
+      "version": "0.2.1",
       "contract": "^1.4.0",
       "icon": "keyboard",
       "category": "input",
@@ -402,7 +402,12 @@
     },
     {
       "name": "settings",
-      "params": {},
+      "params": {
+        "values": {
+          "type": "object",
+          "required": true
+        }
+      },
       "admin": true
     },
     {
