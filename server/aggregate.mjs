@@ -1,0 +1,5 @@
+import {z} from 'zod';import {randomUUID} from 'node:crypto';
+export const Session=z.object({id:z.string().uuid(),startedAt:z.number().int().nonnegative(),endedAt:z.number().int().nonnegative(),language:z.enum(['ru','en']),characters:z.number().int().min(1).max(100000),corrections:z.number().int().nonnegative().max(100000),node:z.string().min(1).max(128)}).strict().refine(s=>s.endedAt>s.startedAt&&s.endedAt-s.startedAt<=3600000&&s.corrections<=s.characters,'Invalid session duration or counts');
+// No text, key identities, application titles or passwords enter this API.
+export function aggregate(session){const s=Session.parse(session);const minutes=(s.endedAt-s.startedAt)/60000;return {wpm:s.characters/5/minutes,accuracy:Math.max(0,1-s.corrections/s.characters),keystrokes:s.characters};}
+export function recordsFor(session,source='dev.delta.type'){const s=Session.parse(session),metrics=aggregate(s);return Object.entries(metrics).map(([metric,value])=>({id:randomUUID(),time:s.endedAt,source,node:s.node,metric,value,dimensions:{language:s.language},payload:{sessionId:s.id,durationMs:s.endedAt-s.startedAt}}));}
