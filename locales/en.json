@@ -1,7 +1,7 @@
 {
   "title": "Delta Type",
   "heading": "Typing statistics",
-  "privacy": "Collection is opt-in and limited to this field. Text stays in your browser; only language, duration, character counts and correction counts are sent. Nothing outside this trainer is tracked.",
+  "privacy": "Optional trainer; background collection is independent. Full text is not sent. If word frequency is enabled in Type, a word/count dictionary is sent; it can contain private data. Speed excludes pauses above the Type threshold. Enter the field’s BCP-47 language code: browsers cannot report the OS keyboard layout.",
   "token": "Delta token with call:typing.ingest",
   "language": "Language of the session",
   "ru": "Russian",
@@ -12,5 +12,7 @@
   "statusSent": "Aggregates accepted; text deleted",
   "statusError": "Could not send. Check your node connection and scoped token.",
   "statusEmpty": "Enter at least one character first.",
-  "statusIME": "IME/composition is not supported for accurate counting in this trainer. Use a trusted aggregate client."
+  "statusIME": "IME/composition is not supported for accurate counting in this trainer. Use a trusted aggregate client.",
+  "statusPaste": "Paste is disabled: the trainer measures typing.",
+  "statusLanguage": "Enter a valid language code, e.g. de-DE, ru or ja."
 }
