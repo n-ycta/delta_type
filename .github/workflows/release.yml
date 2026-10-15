@@ -30,5 +30,7 @@ jobs:
           GH_REPO: ${{ github.repository }}
         run: |
           TAG=v$(node -p "require('./package.json').version")
-          gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" --title "delta_type $TAG" --notes "Verified plugin package for Delta 0.3. Node 22.12 or later required."
+          python3 scripts/release-notes.py "$TAG" > release-notes.md
+          gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" --title "delta_type $TAG" --notes-file release-notes.md
+          gh release edit "$TAG" --notes-file release-notes.md
           gh release upload "$TAG" delta_type.tar.gz SHA256SUMS --clobber
