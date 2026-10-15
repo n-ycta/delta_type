@@ -7,7 +7,7 @@
       "name": "Delta Type",
       "description": "Background typing statistics, pause-aware speed and optional multilingual word frequencies. Replaceable storage; separate trainer.",
       "publisher": "Delta",
-      "version": "0.4.2",
+      "version": "0.4.3",
       "contract": "^1.4.0",
       "icon": "keyboard",
       "category": "input",
@@ -168,6 +168,12 @@
           "id": "clear_words",
           "label": "Clear stored word history",
           "description": "Delete all Type word-frequency records from the selected storage. Aggregate keystroke metrics are preserved.",
+          "dangerous": true
+        },
+        {
+          "id": "enable_word_collection",
+          "label": "Enable word collection",
+          "description": "Word dictionaries can include passwords and private words. Type stores word counts in the selected storage. Password fields cannot reliably be excluded. Enable only if you accept this collection.",
           "dangerous": true
         }
       ],
@@ -780,6 +786,11 @@
               "label": "Clear stored word history",
               "description": "Delete Type word frequencies from selected storage; keep aggregate keystroke metrics.",
               "dangerous": true
+            },
+            {
+              "id": "enable_word_collection",
+              "label": "Enable word collection",
+              "description": "Word dictionaries can include passwords and private words. Type stores word counts in the selected storage. Password fields cannot reliably be excluded. Enable only if you accept this collection."
             }
           ],
           "metrics": [
@@ -1415,6 +1426,11 @@
               "label": "Очистить историю слов",
               "description": "Удалить всю частотность слов Type из выбранного хранилища. Метрики нажатий сохранятся.",
               "dangerous": true
+            },
+            {
+              "id": "enable_word_collection",
+              "label": "Включить сбор слов",
+              "description": "Словарь может содержать пароли и личные слова. Type сохраняет слова с частотами в выбранном хранилище. Надёжно исключить парольные поля нельзя. Включайте только если согласны на такой сбор."
             }
           ],
           "metrics": [
@@ -2050,7 +2066,19 @@
       "admin": true,
       "params": {},
       "description": "Delete Type word-frequency records from selected storage"
+    },
+    {
+      "name": "enable_word_collection",
+      "description": "Explicit word collection consent",
+      "admin": true,
+      "params": {}
+    },
+    {
+      "name": "word_status",
+      "description": "Private content-free word capture diagnostics",
+      "admin": true,
+      "params": {}
     }
   ],
-  "version": "0.4.2"
+  "version": "0.4.3"
 }
