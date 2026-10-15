@@ -126,7 +126,12 @@
       ],
       "repository": "https://github.com/n-ycta/delta_type",
       "defaultLocale": "en",
-      "screenshots": [],
+      "screenshots": [
+        {
+          "url": "https://raw.githubusercontent.com/n-ycta/delta/main/docs/images/metrics.png",
+          "alt": "Russian and English typing metrics"
+        }
+      ],
       "localizations": {
         "en": {
           "name": "Delta Type",
