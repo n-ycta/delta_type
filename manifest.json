@@ -6,7 +6,7 @@
     "ui": {
       "id": "dev.delta.type",
       "name": "Delta Type",
-      "description": "Opt-in RU/EN typing aggregates without recording text. Browser trainer or trusted aggregate clients.",
+      "description": "Background Linux typing statistics with a separate optional trainer. Optional local physical-key history.",
       "publisher": "Delta",
       "version": "0.2.1",
       "contract": "^1.4.0",
@@ -22,20 +22,78 @@
       "capabilities": [
         "metrics.timeseries",
         "actions",
-        "settings.live"
+        "settings.live",
+        "settings.read",
+        "status.read"
       ],
       "settings": [
         {
           "key": "enabled",
-          "label": "Collect aggregate sessions",
           "type": "boolean",
-          "default": true
+          "default": true,
+          "label": "Collect typing statistics"
+        },
+        {
+          "key": "backgroundEnabled",
+          "type": "boolean",
+          "default": true,
+          "label": "Background keyboard collection"
+        },
+        {
+          "key": "language",
+          "type": "select",
+          "default": "unknown",
+          "label": "Keyboard layout (manual)",
+          "help": "evdev reports physical keys, not active layout or committed text. WPM and characters are estimates.",
+          "options": [
+            {
+              "value": "unknown",
+              "label": "Unknown"
+            },
+            {
+              "value": "ru",
+              "label": "Russian"
+            },
+            {
+              "value": "en",
+              "label": "English"
+            }
+          ]
+        },
+        {
+          "key": "recordKeys",
+          "type": "boolean",
+          "default": false,
+          "label": "Record physical key sequence locally",
+          "help": "Optional. Never sent to metric storage. Text reconstruction is not supported by evdev.",
+          "confirmation": {
+            "id": "type.record-keys.v1",
+            "title": "Enable key history?",
+            "body": "History may include passwords, messages and other private input. Password fields cannot reliably be excluded. This stores physical key codes, not committed text.",
+            "acceptLabel": "I understand; enable recording"
+          }
+        },
+        {
+          "key": "retentionDays",
+          "type": "number",
+          "default": 7,
+          "min": 1,
+          "max": 30,
+          "step": 1,
+          "unit": "days",
+          "label": "Maximum key history lifetime",
+          "help": "Private local history is removed at this age, or earlier at 10 MiB. You can clear it manually."
         }
       ],
       "actions": [
         {
           "id": "flush",
           "label": "Send accumulated aggregates"
+        },
+        {
+          "id": "clear_history",
+          "label": "Clear local key history",
+          "dangerous": true
         }
       ],
       "metrics": [
@@ -59,6 +117,24 @@
                 {
                   "id": "en",
                   "label": "English"
+                },
+                {
+                  "id": "unknown",
+                  "label": "Unknown"
+                }
+              ]
+            },
+            {
+              "id": "mode",
+              "label": "Mode",
+              "values": [
+                {
+                  "id": "background",
+                  "label": "Background typing"
+                },
+                {
+                  "id": "trainer",
+                  "label": "Trainer"
                 }
               ]
             }
@@ -73,7 +149,12 @@
             "timeseries",
             "comparison",
             "stat"
-          ]
+          ],
+          "defaultFilters": {
+            "mode": [
+              "background"
+            ]
+          }
         },
         {
           "id": "accuracy",
@@ -95,6 +176,24 @@
                 {
                   "id": "en",
                   "label": "English"
+                },
+                {
+                  "id": "unknown",
+                  "label": "Unknown"
+                }
+              ]
+            },
+            {
+              "id": "mode",
+              "label": "Mode",
+              "values": [
+                {
+                  "id": "background",
+                  "label": "Background typing"
+                },
+                {
+                  "id": "trainer",
+                  "label": "Trainer"
                 }
               ]
             }
@@ -106,7 +205,12 @@
           "visualizations": [
             "gauge",
             "timeseries"
-          ]
+          ],
+          "defaultFilters": {
+            "mode": [
+              "background"
+            ]
+          }
         },
         {
           "id": "keystrokes",
@@ -121,7 +225,28 @@
             "bar",
             "heatmap",
             "stat"
-          ]
+          ],
+          "dimensions": [
+            {
+              "id": "mode",
+              "label": "Mode",
+              "values": [
+                {
+                  "id": "background",
+                  "label": "Background typing"
+                },
+                {
+                  "id": "trainer",
+                  "label": "Trainer"
+                }
+              ]
+            }
+          ],
+          "defaultFilters": {
+            "mode": [
+              "background"
+            ]
+          }
         }
       ],
       "repository": "https://github.com/n-ycta/delta_type",
@@ -135,22 +260,78 @@
       "localizations": {
         "en": {
           "name": "Delta Type",
-          "description": "Opt-in RU/EN typing aggregates without recording text. Browser trainer or trusted aggregate clients.",
+          "description": "Background Linux typing statistics with a separate optional trainer. Optional local physical-key history.",
           "publisher": "Delta",
           "icon": "keyboard",
           "category": "input",
           "settings": [
             {
               "key": "enabled",
-              "label": "Collect aggregate sessions",
               "type": "boolean",
-              "default": true
+              "default": true,
+              "label": "Collect typing statistics"
+            },
+            {
+              "key": "backgroundEnabled",
+              "type": "boolean",
+              "default": true,
+              "label": "Background keyboard collection"
+            },
+            {
+              "key": "language",
+              "type": "select",
+              "default": "unknown",
+              "label": "Keyboard layout (manual)",
+              "help": "evdev reports physical keys, not active layout or committed text. WPM and characters are estimates.",
+              "options": [
+                {
+                  "value": "unknown",
+                  "label": "Unknown"
+                },
+                {
+                  "value": "ru",
+                  "label": "Russian"
+                },
+                {
+                  "value": "en",
+                  "label": "English"
+                }
+              ]
+            },
+            {
+              "key": "recordKeys",
+              "type": "boolean",
+              "default": false,
+              "label": "Record physical key sequence locally",
+              "help": "Optional. Never sent to metric storage. Text reconstruction is not supported by evdev.",
+              "confirmation": {
+                "id": "type.record-keys.v1",
+                "title": "Enable key history?",
+                "body": "History may include passwords, messages and other private input. Password fields cannot reliably be excluded. This stores physical key codes, not committed text.",
+                "acceptLabel": "I understand; enable recording"
+              }
+            },
+            {
+              "key": "retentionDays",
+              "type": "number",
+              "default": 7,
+              "min": 1,
+              "max": 30,
+              "step": 1,
+              "unit": "days",
+              "label": "Maximum key history lifetime",
+              "help": "Private local history is removed at this age, or earlier at 10 MiB. You can clear it manually."
             }
           ],
           "actions": [
             {
               "id": "flush",
               "label": "Send accumulated aggregates"
+            },
+            {
+              "id": "clear_history",
+              "label": "Clear local key history",
+              "dangerous": true
             }
           ],
           "metrics": [
@@ -174,6 +355,24 @@
                     {
                       "id": "en",
                       "label": "English"
+                    },
+                    {
+                      "id": "unknown",
+                      "label": "Unknown"
+                    }
+                  ]
+                },
+                {
+                  "id": "mode",
+                  "label": "Mode",
+                  "values": [
+                    {
+                      "id": "background",
+                      "label": "Background typing"
+                    },
+                    {
+                      "id": "trainer",
+                      "label": "Trainer"
                     }
                   ]
                 }
@@ -188,7 +387,12 @@
                 "timeseries",
                 "comparison",
                 "stat"
-              ]
+              ],
+              "defaultFilters": {
+                "mode": [
+                  "background"
+                ]
+              }
             },
             {
               "id": "accuracy",
@@ -210,6 +414,24 @@
                     {
                       "id": "en",
                       "label": "English"
+                    },
+                    {
+                      "id": "unknown",
+                      "label": "Unknown"
+                    }
+                  ]
+                },
+                {
+                  "id": "mode",
+                  "label": "Mode",
+                  "values": [
+                    {
+                      "id": "background",
+                      "label": "Background typing"
+                    },
+                    {
+                      "id": "trainer",
+                      "label": "Trainer"
                     }
                   ]
                 }
@@ -221,7 +443,12 @@
               "visualizations": [
                 "gauge",
                 "timeseries"
-              ]
+              ],
+              "defaultFilters": {
+                "mode": [
+                  "background"
+                ]
+              }
             },
             {
               "id": "keystrokes",
@@ -236,7 +463,28 @@
                 "bar",
                 "heatmap",
                 "stat"
-              ]
+              ],
+              "dimensions": [
+                {
+                  "id": "mode",
+                  "label": "Mode",
+                  "values": [
+                    {
+                      "id": "background",
+                      "label": "Background typing"
+                    },
+                    {
+                      "id": "trainer",
+                      "label": "Trainer"
+                    }
+                  ]
+                }
+              ],
+              "defaultFilters": {
+                "mode": [
+                  "background"
+                ]
+              }
             }
           ],
           "permissions": [
@@ -254,22 +502,78 @@
         },
         "ru": {
           "name": "Delta Type",
-          "description": "Скорость RU/EN и доля исправлений без записи текста. Тренажёр с явным согласием или интеграция агрегатов из доверенного клиента.",
+          "description": "Фоновая статистика печати Linux и отдельный тренажёр. Необязательная локальная история физических клавиш.",
           "publisher": "Delta",
           "icon": "keyboard",
           "category": "input",
           "settings": [
             {
               "key": "enabled",
-              "label": "Сбор агрегатов",
               "type": "boolean",
-              "default": true
+              "default": true,
+              "label": "Собирать статистику печати"
+            },
+            {
+              "key": "backgroundEnabled",
+              "type": "boolean",
+              "default": true,
+              "label": "Фоновый сбор нажатий"
+            },
+            {
+              "key": "language",
+              "type": "select",
+              "default": "unknown",
+              "label": "Раскладка клавиатуры (вручную)",
+              "help": "evdev передаёт физические клавиши, а не активную раскладку или текст. Скорость и число символов — оценки.",
+              "options": [
+                {
+                  "value": "unknown",
+                  "label": "Неизвестна"
+                },
+                {
+                  "value": "ru",
+                  "label": "Русская"
+                },
+                {
+                  "value": "en",
+                  "label": "Английская"
+                }
+              ]
+            },
+            {
+              "key": "recordKeys",
+              "type": "boolean",
+              "default": false,
+              "label": "Записывать последовательность физических клавиш локально",
+              "help": "Необязательно. Не передаётся в хранилище метрик. Восстановление текста через evdev не поддерживается.",
+              "confirmation": {
+                "id": "type.record-keys.v1",
+                "title": "Включить историю клавиш?",
+                "body": "В историю могут попасть пароли, сообщения и другой личный ввод. Надёжно исключить парольные поля невозможно. Записываются физические коды клавиш, а не введённый текст.",
+                "acceptLabel": "Понимаю, включить запись"
+              }
+            },
+            {
+              "key": "retentionDays",
+              "type": "number",
+              "default": 7,
+              "min": 1,
+              "max": 30,
+              "step": 1,
+              "unit": "дней",
+              "label": "Максимальный срок хранения истории",
+              "help": "Локальная приватная история удаляется по достижении этого срока или раньше при размере 10 МиБ. Доступна ручная очистка."
             }
           ],
           "actions": [
             {
               "id": "flush",
-              "label": "Отправить накопленные агрегаты"
+              "label": "Send accumulated aggregates"
+            },
+            {
+              "id": "clear_history",
+              "label": "Очистить локальную историю клавиш",
+              "dangerous": true
             }
           ],
           "metrics": [
@@ -293,6 +597,24 @@
                     {
                       "id": "en",
                       "label": "English"
+                    },
+                    {
+                      "id": "unknown",
+                      "label": "Неизвестен"
+                    }
+                  ]
+                },
+                {
+                  "id": "mode",
+                  "label": "Режим",
+                  "values": [
+                    {
+                      "id": "background",
+                      "label": "Фоновая печать"
+                    },
+                    {
+                      "id": "trainer",
+                      "label": "Тренажёр"
                     }
                   ]
                 }
@@ -307,7 +629,12 @@
                 "timeseries",
                 "comparison",
                 "stat"
-              ]
+              ],
+              "defaultFilters": {
+                "mode": [
+                  "background"
+                ]
+              }
             },
             {
               "id": "accuracy",
@@ -329,6 +656,24 @@
                     {
                       "id": "en",
                       "label": "English"
+                    },
+                    {
+                      "id": "unknown",
+                      "label": "Неизвестен"
+                    }
+                  ]
+                },
+                {
+                  "id": "mode",
+                  "label": "Режим",
+                  "values": [
+                    {
+                      "id": "background",
+                      "label": "Фоновая печать"
+                    },
+                    {
+                      "id": "trainer",
+                      "label": "Тренажёр"
                     }
                   ]
                 }
@@ -340,7 +685,12 @@
               "visualizations": [
                 "gauge",
                 "timeseries"
-              ]
+              ],
+              "defaultFilters": {
+                "mode": [
+                  "background"
+                ]
+              }
             },
             {
               "id": "keystrokes",
@@ -355,7 +705,28 @@
                 "bar",
                 "heatmap",
                 "stat"
-              ]
+              ],
+              "dimensions": [
+                {
+                  "id": "mode",
+                  "label": "Режим",
+                  "values": [
+                    {
+                      "id": "background",
+                      "label": "Фоновая печать"
+                    },
+                    {
+                      "id": "trainer",
+                      "label": "Тренажёр"
+                    }
+                  ]
+                }
+              ],
+              "defaultFilters": {
+                "mode": [
+                  "background"
+                ]
+              }
             }
           ],
           "permissions": [
@@ -383,7 +754,11 @@
           "reason": "Required runtime authority. This is executable plugin code, not a sandbox.",
           "optional": false
         }
-      ]
+      ],
+      "endpoints": {
+        "status": "typing.status",
+        "settings": "typing.settings"
+      }
     }
   },
   "capabilities": [
@@ -394,25 +769,60 @@
           "type": "object",
           "required": true
         }
+      },
+      "description": "Accept typing aggregates",
+      "localizations": {
+        "ru": {
+          "description": "Принять статистику печати"
+        }
       }
     },
     {
       "name": "status",
-      "params": {}
+      "params": {},
+      "description": "Background collector status and pending metrics",
+      "localizations": {
+        "ru": {
+          "description": "Состояние фонового сборщика и очередь метрик"
+        }
+      }
     },
     {
       "name": "settings",
       "params": {
         "values": {
           "type": "object",
-          "required": true
+          "required": false
         }
       },
-      "admin": true
+      "admin": true,
+      "description": "Read or change Type settings",
+      "localizations": {
+        "ru": {
+          "description": "Прочитать или изменить настройки Type"
+        }
+      }
     },
     {
       "name": "flush",
-      "params": {}
+      "params": {},
+      "description": "Send queued metrics to storage",
+      "localizations": {
+        "ru": {
+          "description": "Отправить накопленные метрики в хранилище"
+        }
+      }
+    },
+    {
+      "name": "clear_history",
+      "params": {},
+      "admin": true,
+      "description": "Clear local physical-key history",
+      "localizations": {
+        "ru": {
+          "description": "Очистить локальную историю физических клавиш"
+        }
+      }
     }
   ]
 }
