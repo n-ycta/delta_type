@@ -1,0 +1,16 @@
+{
+  "title": "Delta · Printing",
+  "heading": "Press statistics",
+  "privacy": "Only an explicit collection in this field. The text stays in the browser; only the language, duration, number of characters and corrections are transmitted; input outside the simulator is not tracked.",
+  "token": "Delta token with call:typing.ingest",
+  "language": "Language of the session",
+  "ru": "Russian",
+  "en": "English",
+  "placeholder": "Type in arbitrary text...",
+  "send": "Complete and ship aggregates",
+  "statusReady": "Start typing",
+  "statusSent": "Aggregates accepted; text deleted",
+  "statusError": "Sending error. Check the kernel and the token.",
+  "statusEmpty": "Enter at least one character first.",
+  "statusIME": "IME/composition: this simulator does not support accurate counting. Use a trusted aggregate assembler."
+}

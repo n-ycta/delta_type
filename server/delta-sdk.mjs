@@ -1,5 +1,5 @@
 import {readFileSync} from 'node:fs';
-const ru=JSON.parse(readFileSync(new URL('./locales/ru.json',import.meta.url)));
+const ru=JSON.parse(readFileSync(new URL('./locales/en.json',import.meta.url)));
 // Delta v1 external-component SDK. No dependency on the core source tree.
 export class DeltaError extends Error {
  constructor(code, message) { super(message); this.code = code; }
@@ -19,7 +19,7 @@ export class DeltaClient {
 }
 export function allowed(caller, capability) {
  if (caller?.scopes?.includes('admin')) return true;
- return (caller?.scopes || []).some(s => s.startsWith('call:') && new RegExp('^'+s.slice(5).split('*').map(x=>x.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('.*')+'$').test(capability));
+ return (caller?.scopes || []).some(s => (s.startsWith('call:') || s.startsWith('admin:')) && new RegExp('^'+s.slice(s.startsWith('admin:')?6:5).split('*').map(x=>x.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('.*')+'$').test(capability));
 }
 export async function servePlugin(client, manifest, handlers, {signal} = {}) {
  let session;

@@ -1,14 +1,14 @@
 {
   "id": "typing",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Privacy-first aggregate typing statistics",
   "metadata": {
     "ui": {
       "id": "dev.delta.type",
-      "name": "Статистика печати",
-      "description": "Скорость RU/EN и доля исправлений без записи текста. Тренажёр с явным согласием или интеграция агрегатов из доверенного клиента.",
+      "name": "Typing statistics",
+      "description": "Opt-in RU/EN typing aggregates without recording text. Browser trainer or trusted aggregate clients.",
       "publisher": "Delta",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "contract": "^1.4.0",
       "icon": "keyboard",
       "category": "input",
@@ -27,7 +27,7 @@
       "settings": [
         {
           "key": "enabled",
-          "label": "Сбор агрегатов",
+          "label": "Packaging",
           "type": "boolean",
           "default": true
         }
@@ -35,14 +35,14 @@
       "actions": [
         {
           "id": "flush",
-          "label": "Отправить накопленные агрегаты"
+          "label": "Send accumulated aggregates"
         }
       ],
       "metrics": [
         {
           "id": "wpm",
-          "label": "Скорость печати",
-          "description": "Стандарт: пять введённых символов на слово",
+          "label": "Speed of printing",
+          "description": "Standard: Five characters per word",
           "kind": "gauge",
           "unit": "wpm",
           "precision": 1,
@@ -50,11 +50,11 @@
           "dimensions": [
             {
               "id": "language",
-              "label": "Язык",
+              "label": "Language",
               "values": [
                 {
                   "id": "ru",
-                  "label": "Русский"
+                  "label": "Russian"
                 },
                 {
                   "id": "en",
@@ -77,8 +77,8 @@
         },
         {
           "id": "accuracy",
-          "label": "Без исправлений",
-          "description": "1 − число Backspace / число вводов. Это не проверка орфографии или правильности текста.",
+          "label": "No corrections.",
+          "description": "1 is Backspace number / number of entries. This is not a spelling test or a text check.",
           "kind": "ratio",
           "unit": "ratio",
           "precision": 1,
@@ -86,11 +86,11 @@
           "dimensions": [
             {
               "id": "language",
-              "label": "Язык",
+              "label": "Language",
               "values": [
                 {
                   "id": "ru",
-                  "label": "Русский"
+                  "label": "Russian"
                 },
                 {
                   "id": "en",
@@ -110,7 +110,7 @@
         },
         {
           "id": "keystrokes",
-          "label": "Введённые символы",
+          "label": "Introduced symbols",
           "kind": "counter",
           "unit": "",
           "precision": 0,
@@ -123,7 +123,226 @@
             "stat"
           ]
         }
-      ]
+      ],
+      "repository": "https://github.com/n-ycta/delta_type",
+      "defaultLocale": "en",
+      "screenshots": [],
+      "localizations": {
+        "en": {
+          "name": "Typing statistics",
+          "description": "Opt-in RU/EN typing aggregates without recording text. Browser trainer or trusted aggregate clients.",
+          "publisher": "Delta",
+          "icon": "keyboard",
+          "category": "input",
+          "settings": [
+            {
+              "key": "enabled",
+              "label": "Packaging",
+              "type": "boolean",
+              "default": true
+            }
+          ],
+          "actions": [
+            {
+              "id": "flush",
+              "label": "Send accumulated aggregates"
+            }
+          ],
+          "metrics": [
+            {
+              "id": "wpm",
+              "label": "Speed of printing",
+              "description": "Standard: Five characters per word",
+              "kind": "gauge",
+              "unit": "wpm",
+              "precision": 1,
+              "better": "higher",
+              "dimensions": [
+                {
+                  "id": "language",
+                  "label": "Language",
+                  "values": [
+                    {
+                      "id": "ru",
+                      "label": "Russian"
+                    },
+                    {
+                      "id": "en",
+                      "label": "English"
+                    }
+                  ]
+                }
+              ],
+              "aggregations": [
+                "avg",
+                "max",
+                "min",
+                "p95"
+              ],
+              "visualizations": [
+                "timeseries",
+                "comparison",
+                "stat"
+              ]
+            },
+            {
+              "id": "accuracy",
+              "label": "No corrections.",
+              "description": "1 is Backspace number / number of entries. This is not a spelling test or a text check.",
+              "kind": "ratio",
+              "unit": "ratio",
+              "precision": 1,
+              "better": "higher",
+              "dimensions": [
+                {
+                  "id": "language",
+                  "label": "Language",
+                  "values": [
+                    {
+                      "id": "ru",
+                      "label": "Russian"
+                    },
+                    {
+                      "id": "en",
+                      "label": "English"
+                    }
+                  ]
+                }
+              ],
+              "aggregations": [
+                "avg",
+                "min"
+              ],
+              "visualizations": [
+                "gauge",
+                "timeseries"
+              ]
+            },
+            {
+              "id": "keystrokes",
+              "label": "Introduced symbols",
+              "kind": "counter",
+              "unit": "",
+              "precision": 0,
+              "aggregations": [
+                "sum"
+              ],
+              "visualizations": [
+                "bar",
+                "heatmap",
+                "stat"
+              ]
+            }
+          ]
+        },
+        "ru": {
+          "name": "Статистика печати",
+          "description": "Скорость RU/EN и доля исправлений без записи текста. Тренажёр с явным согласием или интеграция агрегатов из доверенного клиента.",
+          "publisher": "Delta",
+          "icon": "keyboard",
+          "category": "input",
+          "settings": [
+            {
+              "key": "enabled",
+              "label": "Сбор агрегатов",
+              "type": "boolean",
+              "default": true
+            }
+          ],
+          "actions": [
+            {
+              "id": "flush",
+              "label": "Отправить накопленные агрегаты"
+            }
+          ],
+          "metrics": [
+            {
+              "id": "wpm",
+              "label": "Скорость печати",
+              "description": "Стандарт: пять введённых символов на слово",
+              "kind": "gauge",
+              "unit": "wpm",
+              "precision": 1,
+              "better": "higher",
+              "dimensions": [
+                {
+                  "id": "language",
+                  "label": "Язык",
+                  "values": [
+                    {
+                      "id": "ru",
+                      "label": "Русский"
+                    },
+                    {
+                      "id": "en",
+                      "label": "English"
+                    }
+                  ]
+                }
+              ],
+              "aggregations": [
+                "avg",
+                "max",
+                "min",
+                "p95"
+              ],
+              "visualizations": [
+                "timeseries",
+                "comparison",
+                "stat"
+              ]
+            },
+            {
+              "id": "accuracy",
+              "label": "Без исправлений",
+              "description": "1 − число Backspace / число вводов. Это не проверка орфографии или правильности текста.",
+              "kind": "ratio",
+              "unit": "ratio",
+              "precision": 1,
+              "better": "higher",
+              "dimensions": [
+                {
+                  "id": "language",
+                  "label": "Язык",
+                  "values": [
+                    {
+                      "id": "ru",
+                      "label": "Русский"
+                    },
+                    {
+                      "id": "en",
+                      "label": "English"
+                    }
+                  ]
+                }
+              ],
+              "aggregations": [
+                "avg",
+                "min"
+              ],
+              "visualizations": [
+                "gauge",
+                "timeseries"
+              ]
+            },
+            {
+              "id": "keystrokes",
+              "label": "Введённые символы",
+              "kind": "counter",
+              "unit": "",
+              "precision": 0,
+              "aggregations": [
+                "sum"
+              ],
+              "visualizations": [
+                "bar",
+                "heatmap",
+                "stat"
+              ]
+            }
+          ]
+        }
+      }
     }
   },
   "capabilities": [

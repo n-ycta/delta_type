@@ -1,0 +1,5 @@
+{
+  "sdkMissingToken": "Not specified DELTA_TOKEN to connect the plugin",
+  "sdkUnknownCapability": "Unknown capability",
+  "sdkHandlerFailure": "Plugin handler error. Check its local logs."
+}
