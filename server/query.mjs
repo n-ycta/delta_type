@@ -5,7 +5,6 @@ export async function metricsQuery(client,settings,query){
  if(query?.pluginId!=='dev.delta.type'||!metrics[query.metricId])throw new DeltaError('bad_request','Invalid Type metric');
  const q=query,to=query.range?.preset?Date.now():query.range?.to,from=query.range?.preset?to-spans[query.range.preset]:query.range?.from;
  if(!Number.isFinite(from)||!Number.isFinite(to)||from<0||to<=from||to-from>366*86400000)throw new DeltaError('bad_request','Invalid metric range');
- if(q.metricId==='word_frequency'&&!settings.recordWords)throw new DeltaError('conflict','Enable word frequency in Type settings and accept the Type-owned privacy notice first.');
  const step=q.stepMs||Math.max(60000,Math.ceil((to-from)/120/60000)*60000);if(step<1000||(to-from)/step>2000)throw new DeltaError('bad_request','Too many buckets');
  const groupBy=q.groupBy|| (q.metricId==='word_frequency'?'word':undefined);if(groupBy&&!['word','word_language','language','mode','node','word_class'].includes(groupBy))throw new DeltaError('bad_request','Unknown Type dimension');
  const base={source:'dev.delta.type',metric:q.metricId,filters:Object.fromEntries(Object.entries(q.filters||{}).filter(([k,v])=>k!=='word_class'&&v.length)),limit:10000,...metrics[q.metricId]};

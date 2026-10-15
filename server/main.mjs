@@ -31,10 +31,11 @@ const controller=new AbortController();for(const signal of ['SIGINT','SIGTERM'])
 // Local opt-in trainer. POST requests still authenticate through Delta using the user's token.
 const server=createServer(async(req,res)=>{
  try{
-  if(req.method==='GET'&&req.url==='/options'){res.setHeader('content-type','application/json');res.end(JSON.stringify({recordWords:settings.recordWords,idleThresholdMs:settings.idleThresholdMs,excludeIdle:settings.excludeIdle}));return}
-  if(req.method==='GET'&&req.url==='/'){res.setHeader('content-type','text/html; charset=utf-8');res.end(await readFile(new URL('../public/index.html',import.meta.url)));return}
-  if(req.method==='GET'&&['/ru.json','/en.json'].includes(req.url)){res.setHeader('content-type','application/json');res.end(await readFile(new URL('../locales/'+req.url.slice(1),import.meta.url)));return}
-  if(req.method!=='POST'||req.url!=='/sessions'){res.writeHead(404);res.end();return}
+  const pathname=new URL(req.url,'http://localhost').pathname;
+  if(req.method==='GET'&&pathname==='/options'){res.setHeader('content-type','application/json');res.end(JSON.stringify({recordWords:settings.recordWords,idleThresholdMs:settings.idleThresholdMs,excludeIdle:settings.excludeIdle}));return}
+  if(req.method==='GET'&&pathname==='/'){res.setHeader('content-type','text/html; charset=utf-8');res.end(await readFile(new URL('../public/index.html',import.meta.url)));return}
+  if(req.method==='GET'&&['/ru.json','/en.json'].includes(pathname)){res.setHeader('content-type','application/json');res.end(await readFile(new URL('../locales/'+pathname.slice(1),import.meta.url)));return}
+  if(req.method!=='POST'||pathname!=='/sessions'){res.writeHead(404);res.end();return}
   if(req.headers.origin&&req.headers.origin!==`http://${req.headers.host}`)throw new DeltaError('forbidden','Origin rejected');
   const token=req.headers.authorization?.replace(/^Bearer /,'');if(!token)throw new DeltaError('unauthorized','User token required');let body='',size=0;for await(const chunk of req){size+=chunk.length;if(size>65536)throw new DeltaError('bad_request','Body too large');body+=chunk;}
   const user=new DeltaClient(client.url,token);const result=await user.call('typing.ingest',{session:JSON.parse(body)});res.setHeader('content-type','application/json');res.end(JSON.stringify(result));
