@@ -15,7 +15,7 @@ jobs:
           node-version: '24'
       - run: npm ci
       - run: npm test
-      - run: tar --exclude='server/launch.mjs' -czf delta_type.tar.gz manifest.json package.json package-lock.json server LICENSE NOTICE public locales
+      - run: tar --exclude='server/launch.mjs' --exclude='__pycache__' --exclude='*.pyc' -czf delta_type.tar.gz manifest.json package.json package-lock.json server LICENSE NOTICE public locales
       - run: sha256sum delta_type.tar.gz > SHA256SUMS
       - env:
           GH_TOKEN: ${{ github.token }}
