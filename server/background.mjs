@@ -13,10 +13,10 @@ export function decodeEvents(buffer, wordSize=8,withTime=false){
  return events;
 }
 export class BackgroundCollector {
- constructor({getSettings,onSession,dir,platform=process.platform}){Object.assign(this,{getSettings,onSession,dir,platform});this.devices=new Map();this.deviceNames=new Map();this.state={state:'starting',reason:null,devices:0};this.busy=false;this.stopped=false;this.lastScan=0;this.lastRetention=0;this.activity=new Activity(getSettings);this.pending=[];this.held=new Set();this.words=new WordBuffer({getSettings,onWord:w=>this.activity.word(w,this.lastDecodedAt||Date.now())});this.native=new NativeInput({getSettings,platform,onEvent:e=>{this.lastDecodedAt=e.time||Date.now();this.accept(e,this.lastDecodedAt);if(e.value)this.words.accept(e);if(this.platform==='win32'&&getSettings().recordKeys&&[1,2].includes(e.value))void appendFile(resolve(dir,'keys.ndjson'),JSON.stringify({time:this.lastDecodedAt,code:e.code,repeat:e.value===2})+'\n',{mode:0o600}).catch(()=>{this.state={...this.state,state:'error',reason:'history_write_failed'}})}});}
+ constructor({getSettings,onSession,dir,platform=process.platform}){Object.assign(this,{getSettings,onSession,dir,platform});this.devices=new Map();this.deviceNames=new Map();this.state={state:'starting',reason:null,devices:0};this.busy=false;this.stopped=false;this.lastScan=0;this.lastRetention=0;this.activity=new Activity(getSettings);this.wordCounts={physicalPresses:0,textEvents:0,committed:0,lastKeyAt:null,lastWordAt:null};this.pending=[];this.held=new Set();this.words=new WordBuffer({getSettings,onWord:w=>{this.wordCounts.committed++;this.wordCounts.lastWordAt=this.lastDecodedAt||Date.now();this.activity.word(w,this.lastDecodedAt||Date.now())}});this.native=new NativeInput({getSettings,platform,onEvent:e=>{this.lastDecodedAt=e.time||Date.now();this.accept(e,this.lastDecodedAt);if(e.value){if(e.text&&!e.command){this.wordCounts.textEvents++;}this.words.accept(e);}if(this.platform==='win32'&&getSettings().recordKeys&&[1,2].includes(e.value))void appendFile(resolve(dir,'keys.ndjson'),JSON.stringify({time:this.lastDecodedAt,code:e.code,repeat:e.value===2})+'\n',{mode:0o600}).catch(()=>{this.state={...this.state,state:'error',reason:'history_write_failed'}})}});}
  get bucket(){return this.activity.bucket;}
  set bucket(v){this.activity.bucket=v;}
- status(){return {...this.state,devices:this.platform==='win32'&&this.native.child?1:this.devices.size,decoder:this.native.status()};}
+ status(){return {...this.state,devices:this.platform==='win32'&&this.native.child?1:this.devices.size,decoder:this.native.status(),words:{...this.wordCounts,bufferedCharacters:this.words.text.length}};}
  async start(){await this.tick();this.timer=setInterval(()=>void this.tick(),50);this.timer.unref();}
  async close(){this.native.close();this.words.reset();this.stopped=true;clearInterval(this.timer);while(this.busy)await new Promise(r=>setTimeout(r,10));try{await this.flush();}finally{await this.closeDevices();}}
  async closeDevices(){for(const fd of this.devices.values())await fd.close().catch(()=>{});this.devices.clear();}
@@ -33,7 +33,7 @@ export class BackgroundCollector {
   this.state={state:this.devices.size?'running':'unavailable',reason:denied?'permission_denied':this.devices.size?null:'no_devices'};
  }
  accept(event,now=Date.now()){
-  if(event.type!==1)return;if(event.value===0){this.held.delete(event.code);return;}if(![1,2].includes(event.value))return;this.held.add(event.code);
+  if(event.type!==1)return;if(event.value===0){this.held.delete(event.code);return;}if(![1,2].includes(event.value))return;this.held.add(event.code);this.wordCounts.physicalPresses++;this.wordCounts.lastKeyAt=now;
   const command=event.command||[29,97,125,126].some(k=>this.held.has(k));if(command)return;
   if(!printable(event.code)&&event.code!==14&&event.code!==111)return;
   let language=this.getSettings().language;if(['auto','unknown'].includes(language))language=event.language||'unknown';

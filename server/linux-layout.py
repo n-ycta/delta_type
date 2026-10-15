@@ -12,7 +12,11 @@ import sys
 import xml.etree.ElementTree as ET
 
 CAPTURE = '--words' in sys.argv
-lib = C.CDLL('libxkbcommon.so.0')
+try:
+    lib = C.CDLL('libxkbcommon.so.0')
+except OSError:
+    print(json.dumps({'decoderState':'unavailable','decoderReason':'libxkbcommon_missing'}),flush=True)
+    sys.exit(1)
 class Names(C.Structure):
     _fields_ = [(n, C.c_char_p) for n in ('rules','model','layout','variant','options')]
 for name,args,result in [('xkb_context_new',[C.c_int],C.c_void_p),('xkb_keymap_new_from_names',[C.c_void_p,C.POINTER(Names),C.c_int],C.c_void_p),('xkb_state_new',[C.c_void_p],C.c_void_p),('xkb_state_update_key',[C.c_void_p,C.c_uint,C.c_int],C.c_uint),('xkb_state_key_get_utf8',[C.c_void_p,C.c_uint,C.c_char_p,C.c_size_t],C.c_int),('xkb_state_mod_name_is_active',[C.c_void_p,C.c_char_p,C.c_uint],C.c_int),('xkb_state_unref',[C.c_void_p],None),('xkb_keymap_unref',[C.c_void_p],None),('xkb_state_update_mask',[C.c_void_p,C.c_uint,C.c_uint,C.c_uint,C.c_uint,C.c_uint,C.c_uint],C.c_uint)]:
