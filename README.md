@@ -30,7 +30,9 @@ The console opens at **http://127.0.0.1:7710**. For the optional local trainer o
 
 ### Background collection and permissions
 
-Background collection is enabled by default on Linux. It reads keyboard evdev devices, batches aggregate metrics every five seconds and queues them durably for storage; no browser needs to remain open. The collector discovers keyboards via sysfs, rechecks devices every five seconds, and reads only permitted `/dev/input/event*` nodes. It never elevates privileges or changes device permissions. Grant the **service user** keyboard-device access using your distribution's policy, then restart Type. Do not run the web console as root. Access to an `input` group may grant much broader access than just this plugin; prefer narrowly scoped device rules when possible. In containers devices must be explicitly passed through.
+Background collection is enabled by default on Linux. It reads keyboard evdev devices, batches aggregate metrics every five seconds and queues them durably for storage; no browser needs to remain open. The collector discovers keyboards via sysfs, rechecks devices every five seconds, and reads only permitted `/dev/input/event*` nodes. The collector never elevates privileges. If access is denied, click **Allow keyboard access** in Type's notice (plugin page or dashboard), read the Type-owned warning, then approve the **OS polkit dialog on the node**. The browser itself cannot authorize OS access. The Linux node needs `polkit` (`pkexec`), Python 3 and `acl` (`getfacl`/`setfacl`), with a graphical polkit agent in the signed-in desktop session. A missing dependency, cancelled prompt, timeout or unavailable agent appears in Type status.
+
+The explicitly authorized helper grants only the requesting service user's read access to **currently attached keyboard** event devices. It does not change the `input` group, run the web service as root, grant write access, loosen other users' ACL mask, or install a persistent root service. The grant lasts until the keyboard reconnects or the machine reboots; click again afterwards. **Revoke granted keyboard access** undoes Type's ACL additions after OS approval, restoring prior entries and leaving changed permissions or replaced devices untouched. Disable background collection to close input descriptors immediately. In containers devices must still be explicitly passed through. On remote/headless nodes, a web browser is not a substitute for a local OS authorization agent; administrative device policy may be necessary.
 
 `typing.status` reports `running`, `paused`, `unavailable`, `unsupported` or `error`, the reason and bilingual plugin-owned notices. macOS and Windows background capture are **not implemented**. A missing permission/device is not a reason to wait for a dashboard refresh.
 
@@ -48,7 +50,7 @@ Install on a paired device through the hub's plugin dialog, after explicitly all
 
 ## Capabilities
 
-`typing.ingest`, `typing.status`, `typing.settings` (admin; omit `values` to read), `typing.flush`, `typing.clear_history` (admin). The supervisor credential only registers `typing` and calls `storage.write`; it does not gain owner access. Producer token name: `dev.delta.type`.
+`typing.ingest`, `typing.status`, `typing.settings` (admin; omit `values` to read), `typing.flush`, `typing.clear_history` (admin), `typing.request_input_access` and `typing.revoke_input_access` (admin, Linux OS authorization required). The supervisor credential only registers `typing` and calls `storage.write`; it does not gain owner access. Producer token name: `dev.delta.type`.
 
 The manifest publishes metrics, dimensions, recommended visualizations, settings and actions, with EN/RU presentation patches. UI language never changes metric IDs or protocol values.
 

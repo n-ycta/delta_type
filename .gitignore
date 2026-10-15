@@ -9,3 +9,6 @@ config.json
 *.log
 data/
 server/launch.mjs
+
+__pycache__/
+*.pyc
