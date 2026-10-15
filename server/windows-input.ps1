@@ -1,5 +1,7 @@
 param([switch]$CaptureWords,[switch]$SelfTest)
 $ErrorActionPreference = 'Stop'
+[Console]::OutputEncoding = New-Object System.Text.UTF8Encoding($false)
+$OutputEncoding = [Console]::OutputEncoding
 Add-Type -ReferencedAssemblies System.Windows.Forms,System.Web.Extensions -TypeDefinition @'
 using System;
 using System.Collections.Concurrent;

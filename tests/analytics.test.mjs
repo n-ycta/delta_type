@@ -14,6 +14,6 @@ test('Type owns word schema and routes to an arbitrary compatible storage, combi
  const s={...settings,storageComponent:'my_store',storageNode:'remote',excludedWords:'secret',flaggedWords:'well'};
  const result=await metricsQuery(client,s,{pluginId:'dev.delta.type',metricId:'word_frequency',range:{from:1,to:1000}});assert.deepEqual(result.categories,[{key:'well',label:'well',value:5,flagged:true}]);assert.equal(calls[0].cap,'my_store.aggregate');assert.equal(calls[0].node,'remote');
  const separate=await metricsQuery(client,s,{pluginId:'dev.delta.type',metricId:'word_frequency',groupBy:'word_language',range:{from:1,to:1000}});assert.equal(separate.categories.length,2);
- await assert.rejects(metricsQuery(client,{...s,recordWords:false},{pluginId:'dev.delta.type',metricId:'word_frequency',range:{from:1,to:1000}}),e=>e.code==='conflict');
+ assert.equal((await metricsQuery(client,{...s,recordWords:false},{pluginId:'dev.delta.type',metricId:'word_frequency',range:{from:1,to:1000}})).categories[0].value,5); // Pausing capture must not hide already-consented history.
 });
 test('correction-only timed intervals contribute zero WPM, not missing weight',()=>{const a=new Activity(()=>settings);a.accept('correction',10000,'en');a.accept('correction',10100,'en');assert.equal(aggregate(a.snapshot()).wpm,0);assert.equal(recordsFor(a.snapshot()).find(r=>r.metric==='correction_rate').payload.attempts,2);});
