@@ -1,6 +1,6 @@
 {
   "id": "typing",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Privacy-first aggregate typing statistics",
   "metadata": {
     "ui": {
@@ -8,7 +8,7 @@
       "name": "Delta Type",
       "description": "Background Linux typing statistics with a separate optional trainer. Optional local physical-key history.",
       "publisher": "Delta",
-      "version": "0.3.0",
+      "version": "0.3.1",
       "contract": "^1.4.0",
       "icon": "keyboard",
       "category": "input",
@@ -93,6 +93,18 @@
         {
           "id": "clear_history",
           "label": "Clear local key history",
+          "dangerous": true
+        },
+        {
+          "id": "request_input_access",
+          "label": "Allow keyboard access",
+          "description": "The OS will ask for authorization on this Linux computer. Grant this service user read-only access to currently connected keyboards until device reconnect or reboot. This can expose all keystrokes, including passwords, to Type. The web console stays unprivileged. No input-group membership, broad device chmod, or permanent root helper is added.",
+          "dangerous": true
+        },
+        {
+          "id": "revoke_input_access",
+          "label": "Revoke granted keyboard access",
+          "description": "Approve the OS dialog on this node to undo keyboard ACL entries added by Type. Other OS grants are preserved.",
           "dangerous": true
         }
       ],
@@ -331,6 +343,18 @@
             {
               "id": "clear_history",
               "label": "Clear local key history",
+              "dangerous": true
+            },
+            {
+              "id": "request_input_access",
+              "label": "Allow keyboard access",
+              "description": "The OS will ask for authorization on this Linux computer. Grant this service user read-only access to currently connected keyboards until device reconnect or reboot. This can expose all keystrokes, including passwords, to Type. The web console stays unprivileged. No input-group membership, broad device chmod, or permanent root helper is added.",
+              "dangerous": true
+            },
+            {
+              "id": "revoke_input_access",
+              "label": "Revoke granted keyboard access",
+              "description": "Approve the OS dialog on this node to undo keyboard ACL entries added by Type. Other OS grants are preserved.",
               "dangerous": true
             }
           ],
@@ -573,6 +597,18 @@
             {
               "id": "clear_history",
               "label": "Очистить локальную историю клавиш",
+              "dangerous": true
+            },
+            {
+              "id": "request_input_access",
+              "label": "Разрешить доступ к клавиатуре",
+              "description": "На этом Linux-компьютере появится системный запрос авторизации. Пользователь службы получит только чтение подключённых клавиатур до их переподключения или перезагрузки. Type сможет видеть все нажатия, включая пароли. Веб-панель останется без root-прав. Группа input, общие права устройств и постоянные root-службы не изменяются.",
+              "dangerous": true
+            },
+            {
+              "id": "revoke_input_access",
+              "label": "Отозвать выданный доступ к клавиатуре",
+              "description": "Подтвердите системное окно на узле, чтобы убрать ACL, выданные Type. Другие системные разрешения сохранятся.",
               "dangerous": true
             }
           ],
@@ -821,6 +857,38 @@
       "localizations": {
         "ru": {
           "description": "Очистить локальную историю физических клавиш"
+        }
+      }
+    },
+    {
+      "name": "request_input_access",
+      "params": {
+        "_locale": {
+          "type": "string",
+          "required": false
+        }
+      },
+      "admin": true,
+      "description": "The OS will ask for authorization on this Linux computer. Grant this service user read-only access to currently connected keyboards until device reconnect or reboot. This can expose all keystrokes, including passwords, to Type. The web console stays unprivileged. No input-group membership, broad device chmod, or permanent root helper is added.",
+      "localizations": {
+        "ru": {
+          "description": "На этом Linux-компьютере появится системный запрос авторизации. Пользователь службы получит только чтение подключённых клавиатур до их переподключения или перезагрузки. Type сможет видеть все нажатия, включая пароли. Веб-панель останется без root-прав. Группа input, общие права устройств и постоянные root-службы не изменяются."
+        }
+      }
+    },
+    {
+      "name": "revoke_input_access",
+      "params": {
+        "_locale": {
+          "type": "string",
+          "required": false
+        }
+      },
+      "admin": true,
+      "description": "Approve the OS dialog on this node to undo keyboard ACL entries added by Type. Other OS grants are preserved.",
+      "localizations": {
+        "ru": {
+          "description": "Подтвердите системное окно на узле, чтобы убрать ACL, выданные Type. Другие системные разрешения сохранятся."
         }
       }
     }
