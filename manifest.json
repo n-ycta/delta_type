@@ -7,7 +7,7 @@
       "name": "Delta Type",
       "description": "Background typing statistics, pause-aware speed and optional multilingual word frequencies. Replaceable storage; separate trainer.",
       "publisher": "Delta",
-      "version": "0.4.1",
+      "version": "0.4.2",
       "contract": "^1.4.0",
       "icon": "keyboard",
       "category": "input",
@@ -2051,5 +2051,6 @@
       "params": {},
       "description": "Delete Type word-frequency records from selected storage"
     }
-  ]
+  ],
+  "version": "0.4.2"
 }
