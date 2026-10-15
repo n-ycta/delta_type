@@ -1,0 +1,5 @@
+{
+  "sdkMissingToken": "Не задан DELTA_TOKEN для подключения плагина",
+  "sdkUnknownCapability": "Неизвестная capability",
+  "sdkHandlerFailure": "Ошибка обработчика плагина. Проверьте его локальные журналы."
+}
