@@ -1,0 +1,26 @@
+name: Release plugin package
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: npm ci
+      - run: npm test
+      - run: tar --exclude='server/launch.mjs' -czf delta_type.tar.gz manifest.json package.json package-lock.json server LICENSE NOTICE public locales
+      - run: sha256sum delta_type.tar.gz > SHA256SUMS
+      - env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          TAG=v$(node -p "require('./package.json').version")
+          gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" --title "delta_type $TAG" --notes "Verified plugin package for Delta 0.3. Node 22.12 or later required."
+          gh release upload "$TAG" delta_type.tar.gz SHA256SUMS --clobber

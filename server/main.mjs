@@ -14,7 +14,7 @@ const controller=new AbortController();for(const signal of ['SIGINT','SIGTERM'])
 const server=createServer(async(req,res)=>{
  try{
   if(req.method==='GET'&&req.url==='/'){res.setHeader('content-type','text/html; charset=utf-8');res.end(await readFile(new URL('../public/index.html',import.meta.url)));return}
-  if(req.method==='GET'&&req.url==='/ru.json'){res.setHeader('content-type','application/json');res.end(await readFile(new URL('../locales/ru.json',import.meta.url)));return}
+  if(req.method==='GET'&&['/ru.json','/en.json'].includes(req.url)){res.setHeader('content-type','application/json');res.end(await readFile(new URL('../locales/'+req.url.slice(1),import.meta.url)));return}
   if(req.method!=='POST'||req.url!=='/sessions'){res.writeHead(404);res.end();return}
   if(req.headers.origin&&req.headers.origin!==`http://${req.headers.host}`)throw new DeltaError('forbidden','Origin rejected');
   const token=req.headers.authorization?.replace(/^Bearer /,'');if(!token)throw new DeltaError('unauthorized','User token required');let body='',size=0;for await(const chunk of req){size+=chunk.length;if(size>8192)throw new DeltaError('bad_request','Body too large');body+=chunk;}

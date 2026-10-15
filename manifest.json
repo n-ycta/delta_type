@@ -5,7 +5,7 @@
   "metadata": {
     "ui": {
       "id": "dev.delta.type",
-      "name": "Typing statistics",
+      "name": "Delta Type",
       "description": "Opt-in RU/EN typing aggregates without recording text. Browser trainer or trusted aggregate clients.",
       "publisher": "Delta",
       "version": "0.2.0",
@@ -27,7 +27,7 @@
       "settings": [
         {
           "key": "enabled",
-          "label": "Packaging",
+          "label": "Collect aggregate sessions",
           "type": "boolean",
           "default": true
         }
@@ -41,8 +41,8 @@
       "metrics": [
         {
           "id": "wpm",
-          "label": "Speed of printing",
-          "description": "Standard: Five characters per word",
+          "label": "Typing speed",
+          "description": "Standard WPM: five characters per word.",
           "kind": "gauge",
           "unit": "wpm",
           "precision": 1,
@@ -77,8 +77,8 @@
         },
         {
           "id": "accuracy",
-          "label": "No corrections.",
-          "description": "1 is Backspace number / number of entries. This is not a spelling test or a text check.",
+          "label": "Without corrections",
+          "description": "1 − corrections / entered characters. Not a spelling or text accuracy test.",
           "kind": "ratio",
           "unit": "ratio",
           "precision": 1,
@@ -110,7 +110,7 @@
         },
         {
           "id": "keystrokes",
-          "label": "Introduced symbols",
+          "label": "Characters entered",
           "kind": "counter",
           "unit": "",
           "precision": 0,
@@ -129,7 +129,7 @@
       "screenshots": [],
       "localizations": {
         "en": {
-          "name": "Typing statistics",
+          "name": "Delta Type",
           "description": "Opt-in RU/EN typing aggregates without recording text. Browser trainer or trusted aggregate clients.",
           "publisher": "Delta",
           "icon": "keyboard",
@@ -137,7 +137,7 @@
           "settings": [
             {
               "key": "enabled",
-              "label": "Packaging",
+              "label": "Collect aggregate sessions",
               "type": "boolean",
               "default": true
             }
@@ -151,8 +151,8 @@
           "metrics": [
             {
               "id": "wpm",
-              "label": "Speed of printing",
-              "description": "Standard: Five characters per word",
+              "label": "Typing speed",
+              "description": "Standard WPM: five characters per word.",
               "kind": "gauge",
               "unit": "wpm",
               "precision": 1,
@@ -187,8 +187,8 @@
             },
             {
               "id": "accuracy",
-              "label": "No corrections.",
-              "description": "1 is Backspace number / number of entries. This is not a spelling test or a text check.",
+              "label": "Without corrections",
+              "description": "1 − corrections / entered characters. Not a spelling or text accuracy test.",
               "kind": "ratio",
               "unit": "ratio",
               "precision": 1,
@@ -220,7 +220,7 @@
             },
             {
               "id": "keystrokes",
-              "label": "Introduced symbols",
+              "label": "Characters entered",
               "kind": "counter",
               "unit": "",
               "precision": 0,
@@ -233,10 +233,22 @@
                 "stat"
               ]
             }
+          ],
+          "permissions": [
+            {
+              "scope": "register:typing",
+              "reason": "Required runtime authority. This is executable plugin code, not a sandbox.",
+              "optional": false
+            },
+            {
+              "scope": "call:storage.write",
+              "reason": "Required runtime authority. This is executable plugin code, not a sandbox.",
+              "optional": false
+            }
           ]
         },
         "ru": {
-          "name": "Статистика печати",
+          "name": "Delta Type",
           "description": "Скорость RU/EN и доля исправлений без записи текста. Тренажёр с явным согласием или интеграция агрегатов из доверенного клиента.",
           "publisher": "Delta",
           "icon": "keyboard",
@@ -340,9 +352,33 @@
                 "stat"
               ]
             }
+          ],
+          "permissions": [
+            {
+              "scope": "register:typing",
+              "reason": "Необходимые права процесса. Плагин исполняет код на узле без песочницы.",
+              "optional": false
+            },
+            {
+              "scope": "call:storage.write",
+              "reason": "Необходимые права процесса. Плагин исполняет код на узле без песочницы.",
+              "optional": false
+            }
           ]
         }
-      }
+      },
+      "permissions": [
+        {
+          "scope": "register:typing",
+          "reason": "Required runtime authority. This is executable plugin code, not a sandbox.",
+          "optional": false
+        },
+        {
+          "scope": "call:storage.write",
+          "reason": "Required runtime authority. This is executable plugin code, not a sandbox.",
+          "optional": false
+        }
+      ]
     }
   },
   "capabilities": [
