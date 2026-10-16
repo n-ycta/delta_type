@@ -155,13 +155,13 @@
         {
           "id": "request_input_access",
           "label": "Allow keyboard access",
-          "description": "The OS will ask for authorization on this Linux computer. Grant this service user read-only access to currently connected keyboards until device reconnect or reboot. This can expose all keystrokes, including passwords, to Type. The web console stays unprivileged. No input-group membership, broad device chmod, or permanent root helper is added.",
+          "description": "Approve once in the OS dialog on this Linux computer. Install a root-owned keyboard-only udev rule and a small event helper so this service user keeps read-only keyboard access across reboot and reconnect, until revoked. This includes future attached keyboards and can expose passwords and other private input to Type. The web console stays unprivileged; no input-group membership, broad device chmod or root daemon is added.",
           "dangerous": true
         },
         {
           "id": "revoke_input_access",
           "label": "Revoke granted keyboard access",
-          "description": "Approve the OS dialog on this node to undo keyboard ACL entries added by Type. Other OS grants are preserved.",
+          "description": "Approve the OS dialog on this node to remove Type’s persistent keyboard rule and consent, and restore ACL entries changed by Type. Cached device events cannot regrant access. Other OS grants are preserved.",
           "dangerous": true
         },
         {
@@ -772,13 +772,13 @@
             {
               "id": "request_input_access",
               "label": "Allow keyboard access",
-              "description": "The OS will ask for authorization on this Linux computer. Grant this service user read-only access to currently connected keyboards until device reconnect or reboot. This can expose all keystrokes, including passwords, to Type. The web console stays unprivileged. No input-group membership, broad device chmod, or permanent root helper is added.",
+              "description": "Approve once in the OS dialog on this Linux computer. Install a root-owned keyboard-only udev rule and a small event helper so this service user keeps read-only keyboard access across reboot and reconnect, until revoked. This includes future attached keyboards and can expose passwords and other private input to Type. The web console stays unprivileged; no input-group membership, broad device chmod or root daemon is added.",
               "dangerous": true
             },
             {
               "id": "revoke_input_access",
               "label": "Revoke granted keyboard access",
-              "description": "Approve the OS dialog on this node to undo keyboard ACL entries added by Type. Other OS grants are preserved.",
+              "description": "Approve the OS dialog on this node to remove Type’s persistent keyboard rule and consent, and restore ACL entries changed by Type. Cached device events cannot regrant access. Other OS grants are preserved.",
               "dangerous": true
             },
             {
@@ -1412,13 +1412,13 @@
             {
               "id": "request_input_access",
               "label": "Разрешить доступ к клавиатуре",
-              "description": "На этом Linux-компьютере появится системный запрос авторизации. Пользователь службы получит только чтение подключённых клавиатур до их переподключения или перезагрузки. Type сможет видеть все нажатия, включая пароли. Веб-панель останется без root-прав. Группа input, общие права устройств и постоянные root-службы не изменяются.",
+              "description": "Подтвердите системный запрос один раз на этом Linux-компьютере. Type установит принадлежащие root правило udev только для клавиатур и небольшой обработчик событий. Доступ пользователя службы только на чтение сохранится после перезагрузки и переподключения до отзыва, включая новые клавиатуры. Type сможет видеть пароли и другой личный ввод. Web останется без root-прав; группа input, общие права устройств и root-демоны не используются.",
               "dangerous": true
             },
             {
               "id": "revoke_input_access",
               "label": "Отозвать выданный доступ к клавиатуре",
-              "description": "Подтвердите системное окно на узле, чтобы убрать ACL, выданные Type. Другие системные разрешения сохранятся.",
+              "description": "Подтвердите системное окно на узле, чтобы удалить постоянное правило и разрешение Type и восстановить изменённые им ACL. Повторные события устройств не выдадут доступ снова. Другие системные разрешения сохранятся.",
               "dangerous": true
             },
             {
@@ -2027,10 +2027,10 @@
         }
       },
       "admin": true,
-      "description": "The OS will ask for authorization on this Linux computer. Grant this service user read-only access to currently connected keyboards until device reconnect or reboot. This can expose all keystrokes, including passwords, to Type. The web console stays unprivileged. No input-group membership, broad device chmod, or permanent root helper is added.",
+      "description": "Approve once in the OS dialog on this Linux computer. Install a root-owned keyboard-only udev rule and a small event helper so this service user keeps read-only keyboard access across reboot and reconnect, until revoked. This includes future attached keyboards and can expose passwords and other private input to Type. The web console stays unprivileged; no input-group membership, broad device chmod or root daemon is added.",
       "localizations": {
         "ru": {
-          "description": "На этом Linux-компьютере появится системный запрос авторизации. Пользователь службы получит только чтение подключённых клавиатур до их переподключения или перезагрузки. Type сможет видеть все нажатия, включая пароли. Веб-панель останется без root-прав. Группа input, общие права устройств и постоянные root-службы не изменяются."
+          "description": "Подтвердите системный запрос один раз на этом Linux-компьютере. Type установит принадлежащие root правило udev только для клавиатур и небольшой обработчик событий. Доступ пользователя службы только на чтение сохранится после перезагрузки и переподключения до отзыва, включая новые клавиатуры. Type сможет видеть пароли и другой личный ввод. Web останется без root-прав; группа input, общие права устройств и root-демоны не используются."
         }
       }
     },
@@ -2043,10 +2043,10 @@
         }
       },
       "admin": true,
-      "description": "Approve the OS dialog on this node to undo keyboard ACL entries added by Type. Other OS grants are preserved.",
+      "description": "Approve the OS dialog on this node to remove Type’s persistent keyboard rule and consent, and restore ACL entries changed by Type. Cached device events cannot regrant access. Other OS grants are preserved.",
       "localizations": {
         "ru": {
-          "description": "Подтвердите системное окно на узле, чтобы убрать ACL, выданные Type. Другие системные разрешения сохранятся."
+          "description": "Подтвердите системное окно на узле, чтобы удалить постоянное правило и разрешение Type и восстановить изменённые им ACL. Повторные события устройств не выдадут доступ снова. Другие системные разрешения сохранятся."
         }
       }
     },

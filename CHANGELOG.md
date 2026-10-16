@@ -9,6 +9,10 @@
 
 ## [Unreleased]
 
+- Replace reboot-limited Linux keyboard ACL grants with an explicitly approved persistent keyboard-only udev policy for the requesting service user. Reapply read-only access after reboot/hotplug without repeated authorization.
+- Revoke persistent consent and rules before restoring ACLs; prevent stale device events from granting again. Preserve prior ACL entries, protect masks and bind ACL tools to verified device descriptors.
+- Explain the persistent permission scope in Type-owned English/Russian warnings; do not silently convert old temporary grants.
+
 - Improve release documentation and changelog-backed release publishing; no new runtime release is created for this maintenance change.
 
 ## [v0.4.3]
