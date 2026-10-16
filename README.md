@@ -84,7 +84,7 @@ WPM = eligible character intervals × 12,000 / active milliseconds (standard fiv
 
 Tests use real libxkbcommon with fixture compositor IPC (German/Russian/French), not an actual Omarchy desktop or hardware. PostgreSQL/file/alternate storage and UI integration are tested separately.
 
-### Persistent permission upgrade (Unreleased)
+### Persistent permission upgrade (v0.4.4)
 
 Earlier grants were temporary and disappeared with `/dev/input` and `/run` on reboot. After updating, approve **Allow keyboard access** once to install the persistent policy. An old ACL is not silently converted into permanent authority. Type owns both the warning and actions; Web remains a generic unprivileged renderer. Windows desktop capture is unchanged. Linux requires a real udev host; a container cannot manufacture access to host keyboards.
 

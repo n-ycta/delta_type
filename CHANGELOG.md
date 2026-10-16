@@ -9,11 +9,24 @@
 
 ## [Unreleased]
 
-- Replace reboot-limited Linux keyboard ACL grants with an explicitly approved persistent keyboard-only udev policy for the requesting service user. Reapply read-only access after reboot/hotplug without repeated authorization.
-- Revoke persistent consent and rules before restoring ACLs; prevent stale device events from granting again. Preserve prior ACL entries, protect masks and bind ACL tools to verified device descriptors.
-- Explain the persistent permission scope in Type-owned English/Russian warnings; do not silently convert old temporary grants.
+- No pending changes.
 
-- Improve release documentation and changelog-backed release publishing; no new runtime release is created for this maintenance change.
+## [v0.4.4]
+
+### Fixes
+- Preserve explicitly granted Linux keyboard access across reboot and keyboard reconnect instead of granting access only to temporary device nodes.
+- Reapply read-only access to keyboard devices for the approved service user without repeated polkit prompts.
+- Remove persistent consent and udev rules before restoring ACLs, so queued device events cannot regrant revoked access.
+
+### Security
+- Keep the grant keyboard-only and UID-bound; never add the user to the input group, grant device write access, or widen ACL masks.
+- Use a root-owned udev event helper, not a root daemon; keep Web unprivileged and warnings owned by Type.
+- Bind ACL operations to verified device descriptors and preserve prior permissions when revoking the grant.
+
+### Upgrade notes
+- After updating, approve Allow keyboard access once to replace an old temporary grant with persistent consent. Existing grants are not silently made permanent.
+- Linux requires polkit, Python 3, udev and ACL tools. Actual polkit/udev boot integration must be verified on the target desktop; automated tests simulate reboot, hotplug and revocation.
+- Windows desktop capture is unchanged.
 
 ## [v0.4.3]
 
