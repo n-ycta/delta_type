@@ -18,7 +18,7 @@ Invoke-WebRequest https://raw.githubusercontent.com/n-ycta/delta_type/main/insta
 .\delta-type-install.ps1
 ```
 
-The console opens at **http://127.0.0.1:7710**. For the optional local trainer open **http://127.0.0.1:7720** (`?lang=en` or `?lang=ru`). Create a scoped token permitting `call:typing.ingest` in the console and enter it in the trainer. The trainer never sends its text buffer — aggregate counts/duration plus optional explicitly consented word counts. The console's automatic owner login does not automatically grant the separate trainer an owner credential.
+The console opens at **http://127.0.0.1:7710**. For the optional local trainer open **http://127.0.0.1:7720** (`?lang=en` or `?lang=ru`). Create a scoped token permitting `call:typing.ingest` in the console and enter it in the trainer. The trainer never sends its text buffer — aggregate counts/duration plus optional explicitly consented word counts. A browser's saved owner session does not grant the separate trainer an owner credential; the trainer must use its own explicitly scoped token.
 
 ## What is measured
 
@@ -91,3 +91,8 @@ Earlier grants were temporary and disappeared with `/dev/input` and `/run` on re
 Managed root-owned paths: `/etc/udev/rules.d/71-delta-type-input-UID.rules`, `/var/lib/delta-type-input-access/UID.json`, `/usr/local/libexec/delta-type-input-access/keyboard-acl.py`. Recovery snapshots and a cross-process lock live under `/run/delta-type-input-access`. The helper uses fixed system tools with isolated Python, verifies keyboard capabilities independently of the udev match and binds ACL commands to an open device descriptor to avoid event-path recycling. There is no root daemon, shell command, or background polkit prompt.
 
 Tests simulate loss of `/run` and recreation of input devices with different event numbers, hotplug, regrant, revoke, stale udev events, other UIDs, non-keyboards, restrictive masks and failed rule reload. Real Omarchy boot/polkit/udev integration still requires validation on an actual desktop.
+
+## Web and native clients
+
+This is an independent Core plugin, not code embedded in a particular frontend. Compatible Web/Desktop clients discover its manifest and API through the node. A phone can manage a trusted paired desktop/VPS node; it does not run local npm plugins or desktop input collectors. Choose the service/source node explicitly and review the permissions before installation. Missing capabilities remain unavailable rather than being simulated.
+
