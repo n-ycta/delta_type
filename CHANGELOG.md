@@ -11,6 +11,14 @@
 
 - No pending changes.
 
+## [v0.4.5]
+
+- Restore effective, root-owned persistent keyboard consent on plugin restart.
+- Do not open another polkit prompt when that policy and keyboard read access already exist.
+- Reject untrusted rules and ineffective permissions; keep explicit OS approval for the first grant or repairs.
+- Correct notices to explain revocable access across reboot and reconnect.
+- Add persistent-policy/restart regression tests; physical desktop validation remains required.
+
 ## [v0.4.4]
 
 ### Fixes

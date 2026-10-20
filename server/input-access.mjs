@@ -1,16 +1,23 @@
 // Type owns OS permissions. The web UI is only a generic action/notice renderer.
-import {access,readFile} from 'node:fs/promises';
+import {access,readFile,lstat,readdir} from 'node:fs/promises';
 import {constants} from 'node:fs';
 import {spawn} from 'node:child_process';
 import {DeltaError} from './delta-sdk.mjs';
 const tools=['/usr/bin/pkexec','/usr/bin/python3','/usr/bin/getfacl','/usr/bin/setfacl','/usr/bin/udevadm'];
+export async function persistentKeyboardGrant({uid=process.getuid?.(),read=readFile,info=lstat,list=readdir,canRead=path=>access(path,constants.R_OK)}={}){
+ if(!Number.isSafeInteger(uid)||uid<=0)return false;
+ try{const path='/etc/udev/rules.d/71-delta-type-input-'+uid+'.rules',s=await info(path);if(!s.isFile()||s.uid!==0||(s.mode&0o022))return false;const rule=await read(path,'utf8');if(!rule.includes('keyboard-acl.py device '+uid+' %k')||!rule.includes('ID_INPUT_KEYBOARD'))return false;
+ const names=await list('/sys/class/input');let keyboards=0;for(const name of names.filter(x=>/^event[0-9]+$/.test(x))){let bits;try{bits=BigInt('0x'+(await read('/sys/class/input/'+name+'/device/capabilities/key','utf8')).trim().split(/\s+/).at(-1))}catch{continue}if(!(bits&(1n<<30n))||!(bits&(1n<<28n)))continue;keyboards++;await canRead('/dev/input/'+name)}return keyboards>0}catch{return false}
+}
 export class InputAccess {
- constructor({platform=process.platform,launch=spawn,check=async()=>{for(const tool of tools)await access(tool,constants.X_OK)},readHelper=()=>readFile(new URL('./input-access-helper.py',import.meta.url),'utf8'),onGranted=()=>{},onRevoked=()=>{}}={}){Object.assign(this,{platform,launch,check,readHelper,onGranted,onRevoked});this.state={state:'idle'};this.child=null;}
+ constructor({platform=process.platform,launch=spawn,check=async()=>{for(const tool of tools)await access(tool,constants.X_OK)},probePersistent=persistentKeyboardGrant,readHelper=()=>readFile(new URL('./input-access-helper.py',import.meta.url),'utf8'),onGranted=()=>{},onRevoked=()=>{}}={}){Object.assign(this,{platform,launch,check,readHelper,probePersistent,onGranted,onRevoked});this.state={state:'idle'};this.child=null;}
  status(){return {...this.state};}
+ async restore(){if(this.platform==='linux'&&await this.probePersistent()){this.state={state:'granted',operation:'grant',persistent:true,until:'revoked'};return true}return false}
  async request(operation='grant',locale='en'){
   if(this.platform!=='linux')throw new DeltaError('unsupported','This keyboard permission request is for Linux. Windows collectors run in the signed-in desktop user session.');
   if(!['grant','revoke'].includes(operation))throw new DeltaError('bad_request','Invalid permission operation');
-  if(this.state.state==='pending')throw new DeltaError('conflict','System authorization already pending');
+  if(this.state.state==='pending'||this.probing)throw new DeltaError('conflict','System authorization already pending');
+  this.probing=true;try{if(operation==='grant'&&await this.restore())return {granted:true,persistent:true,until:'revoked'};}finally{this.probing=false}
   // Set pending before asynchronous work so repeated web clicks cannot start multiple root prompts.
   this.state={state:'pending',operation};
   try{await this.check();const helper=await this.readHelper();

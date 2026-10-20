@@ -1,6 +1,6 @@
 import {test} from 'node:test';import assert from 'node:assert/strict';
 import {EventEmitter} from 'node:events';import {PassThrough} from 'node:stream';
-import {InputAccess,accessNotice} from '../server/input-access.mjs';
+import {InputAccess,accessNotice,persistentKeyboardGrant} from '../server/input-access.mjs';
 import {readFile} from 'node:fs/promises';import {spawnSync} from 'node:child_process';
 function fake(){const child=new EventEmitter();child.stdout=new PassThrough();child.stderr=new PassThrough();child.kill=()=>{};return child;}
 test('permission request is explicit, OS-owned, isolated Python, single prompt, nonblocking',async()=>{
@@ -26,3 +26,6 @@ test('privileged helper rejects malformed devices and requires PKEXEC_UID, never
  const r=spawnSync('/usr/bin/python3',['-I','-c',script],{encoding:'utf8'});assert.equal(r.status,0,r.stderr);
 });
 test('root helper grant/regrant/revoke simulation preserves prior ACL without changing the mask',()=>{const r=spawnSync('/usr/bin/python3',['-I',new URL('./input-access-helper.test.py',import.meta.url).pathname],{encoding:'utf8'});assert.equal(r.status,0,r.stderr);});
+
+test('restart restores existing effective OS consent without another polkit dialog',async()=>{let prompts=0;const a=new InputAccess({probePersistent:async()=>true,launch:()=>{prompts++}});assert.equal(await a.restore(),true);assert.equal(a.status().persistent,true);assert.deepEqual(await a.request(),{granted:true,persistent:true,until:'revoked'});assert.equal(prompts,0)});
+test('persistent-policy probe requires root-owned rule and currently readable real keyboards',async()=>{const opts={uid:1000,info:async()=>({isFile:()=>true,uid:0,mode:0o100644}),read:async p=>p.endsWith('.rules')?'ENV{ID_INPUT_KEYBOARD}=="1", RUN+="/usr/bin/python3 -I /usr/local/libexec/delta-type-input-access/keyboard-acl.py device 1000 %k"':'50000000',list:async()=>['event2'],canRead:async()=>{}};assert.equal(await persistentKeyboardGrant(opts),true);assert.equal(await persistentKeyboardGrant({...opts,info:async()=>({isFile:()=>true,uid:1000,mode:0o100644})}),false);assert.equal(await persistentKeyboardGrant({...opts,canRead:async()=>{throw Error('denied')}}),false)});
